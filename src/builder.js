@@ -44,14 +44,9 @@ if (String(dockerVersion.stdout).indexOf('Docker version') == -1) {
 
 // run cmake inside docker container
 var execSync = require('child_process').execSync;
-console.log(`start to build application inside docker`);
-var dockercommand = `docker run -t -d -i -v "${workingdir}":/source ${dockerImageName} /build.sh`;
-var containerid = execSync(dockercommand);
-console.log(`containerid is ${containerid}`);
-var output = fs.readFileSync(path.join(workingdir, 'build.log'));
-console.log('build output');
-console.log('-------------------------------------------------');
-console.log(String(output));
+console.log(`Start to build code inside docker`);
+
+localExecCmd('docker', ['run', '-i', '-v', workingdir + ':/source', dockerImageName, '/build.sh'])
 
 function usage() {
     console.log([
@@ -61,4 +56,31 @@ function usage() {
         '--cmakefile cmakeLists.txt full path',
         '--workingdir workingdir',
     ].join('\r\n'));
+}
+
+function localExecCmd(cmd, args, cb) {
+    try {
+        console.log(`command is ${cmd}, arguments are ${args}`);
+        var cp = require('child_process').spawn(cmd, args);
+
+        var result = '';
+        cp.stdout.on('data', function (data) {
+            console.log(String(data));
+            result += String(data);
+        });
+
+        cp.stderr.on('data', function (data) {
+            console.log(String(data));
+            result += String(data);
+        });
+
+        cp.on('close', function (code) {
+            if (cb) {
+                return cb(result);
+            }
+        });
+    } catch (e) {
+        e.stack = "ERROR: " + e;
+        if (cb) cb(e);
+    }
 }
