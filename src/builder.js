@@ -44,9 +44,11 @@ if (String(dockerVersion.stdout).indexOf('Docker version') == -1) {
 
 // run cmake inside docker container
 var execSync = require('child_process').execSync;
-console.log(`Start to build code inside docker`);
 
-localExecCmd('docker', ['run', '-i', '-v', workingdir + ':/source', dockerImageName, '/build.sh'])
+var cmdAndArgs = [];
+cmdAndArgs.push(['docker', ['pull', dockerImageName]]);
+cmdAndArgs.push(['docker', ['run', '-i', '-v', workingdir + ':/source', dockerImageName, '/build.sh']]);
+localExecCmds(cmdAndArgs);
 
 function usage() {
     console.log([
@@ -60,7 +62,6 @@ function usage() {
 
 function localExecCmd(cmd, args, cb) {
     try {
-        console.log(`command is ${cmd}, arguments are ${args}`);
         var cp = require('child_process').spawn(cmd, args);
 
         var result = '';
@@ -83,4 +84,19 @@ function localExecCmd(cmd, args, cb) {
         e.stack = "ERROR: " + e;
         if (cb) cb(e);
     }
+}
+
+function localExecCmds(cmdAndArgs, cb) {
+
+  // check if there are any commands to execute
+  if (cmdAndArgs.length == 0) {
+    if (cb) cb();
+    return;
+  }
+
+  // execute first command
+  var cmdAndArg = cmdAndArgs.splice(0, 1)[0];
+  localExecCmd(cmdAndArg[0], cmdAndArg[1], function (e) {
+    localExecCmds(cmdAndArgs, cb);
+  })
 }
