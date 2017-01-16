@@ -1,0 +1,17 @@
+{
+  "name": "iotbuilder",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {
+  },
+  "repository": {
+  },
+  "author": "",
+  "devDependencies": {
+    "fs-extra":"^1.0.0",
+    "path":"^0.12.7",
+    "minimist":"^1.2.0"
+  },
+  "dependencies": {
+  }
+}

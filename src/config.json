@@ -1,0 +1,4 @@
+{
+    "raspberrypi": "yungez/docker-raspberrypi",
+    "edison": "yungez/docker-edison"
+}
