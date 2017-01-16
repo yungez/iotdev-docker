@@ -28,7 +28,7 @@ ENV RPI_ROOT ${PWD}/rpitools/raspbian-jessie-sysroot
 RUN PATH=$PATH:./rpitools/arm-linux-gnueabihf/bin
 
 # copy build script
-COPY build.sh /
+COPY build_raspberrypi.sh /build.sh
 
 # build azure iot sdks
 # generate toolchain-file
@@ -55,4 +55,4 @@ ENV CXX ${PWD}/rpitools/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++
 RUN echo clone iot-hub-c-raspberrypi-getting-started
 RUN git clone -b develop --recursive https://github.com/Azure-samples/iot-hub-c-raspberrypi-getting-started.git
 RUN echo build iot-hub-c-raspberrypi-getting-started
-CMD cd iot-hub-c-raspberrypi-getting-started/.misc && ./build.sh --toolchain-file ./toolchain-rpi.cmake -cl --sysroot=$RPI_ROOT&& make
+CMD cd iot-hub-c-raspberrypi-getting-started/.misc && ./build.sh --toolchain-file ./toolchain-file-rpi.cmake -cl --sysroot=$RPI_ROOT&& make
