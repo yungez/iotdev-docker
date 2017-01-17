@@ -47,9 +47,9 @@ done
 
 if [ -z "$srcfile" ];
 then
-    sshpass -p $password scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r $srcdir $username@$deviceip:$destdir
+    echo sshpass -p $password scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r $srcdir $username@$deviceip:$destdir
     sshpass -p $password scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r $srcdir $username@$deviceip:$destdir
 else
-    sshpass -p $password scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $srcfile $username@$deviceip:$destdir
+    echo sshpass -p $password scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $srcfile $username@$deviceip:$destdir
     sshpass -p $password scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $srcfile $username@$deviceip:$destdir
 fi

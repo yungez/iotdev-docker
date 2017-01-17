@@ -3,6 +3,16 @@
 save_device=0
 save_workingdir=0
 
+if [ "$1" == "build" ]
+then
+  task=build
+elif [ "$1" == "deploy" ]
+then
+  task=deploy
+else
+  echo unknown task
+fi
+
 for arg in "$@"
 do   
     if [ $save_device == 1 ]
@@ -29,8 +39,5 @@ do
     fi
 done
 
-echo $imagename
-echo $workingdir
-
 #docker pull yungez/docker-edison
-docker run -i -v $workingdir:/source $imagename build
+docker run -i -v $workingdir:/source $imagename $task $@
