@@ -1,8 +1,0 @@
-FROM yungez/docker-edison:latest
-
-RUN apt-get clean && apt-get update
-RUN apt-get install -y \
-  sshpass
-
-COPY index.sh /index.sh
-COPY deploy.sh /deploy.sh
