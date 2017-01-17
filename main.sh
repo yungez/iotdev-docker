@@ -40,4 +40,4 @@ do
 done
 
 #docker pull yungez/docker-edison
-docker run -i -v $workingdir:/source $imagename $task $@
+docker run -i -v $workingdir:/source $imagename /index.sh $task $@
