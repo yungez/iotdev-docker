@@ -39,5 +39,5 @@ do
     fi
 done
 
-#docker pull yungez/docker-edison
+docker pull $imagename
 docker run -i -v $workingdir:/source $imagename /index.sh $task $@
