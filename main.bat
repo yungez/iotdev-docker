@@ -41,11 +41,11 @@ echo working dir is: %workingdir%
 echo device is: %device%
 
 if %device% equ edison (
-  SET imagename="yungez/docker-edison"
+  SET imagename="zhijzhao/edison"
 ) else (
   echo %device%
   if %device% equ raspberrypi (
-    SET imagename="yungez/docker-raspberrypi"
+    SET imagename="zhijzhao/raspberrypi"
   ) else (
     echo unknown device
   )
