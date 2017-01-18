@@ -13,7 +13,8 @@ RUN apt-get install -y \
     make \
     pkg-config \
     uuid-dev \
-    valgrind
+    valgrind \
+    sshpass
 
 #RUN sh -c "echo 'deb http://ppa.launchpad.net/aziotsdklinux/ppa-azureiot/ubuntu vivid main' >> /etc/apt/sources.list"
 #RUN sh -c "echo 'deb-src http://ppa.launchpad.net/aziotsdklinux/ppa-azureiot/ubuntu vivid main' >> /etc/apt/sources.list"
@@ -43,9 +44,9 @@ SET(CMAKE_FIND_ROOT_PATH $ENV{RPI_ROOT}) \n\
 SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER) \n\
 # for libraries and headers in the target directories \n\
 SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY) \n\
-SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)' > toolchain-file-rpi.cmake
+SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)' > /home/toolchain-file-rpi.cmake
 
-RUN ./azure-iot-sdk-c/build_all/linux/build.sh --toolchain-file ./toolchain-file-rpi.cmake -cl --sysroot=$RPI_ROOT
+RUN ./azure-iot-sdk-c/build_all/linux/build.sh --toolchain-file /home/toolchain-file-rpi.cmake -cl --sysroot=$RPI_ROOT
 
 RUN echo 'alias gcc="arm-linux-gnueabihf-gcc --sysroot=$RPI_ROOT"' >> ~/.bashrc
 
@@ -55,4 +56,4 @@ ENV CXX ${PWD}/rpitools/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++
 RUN echo clone iot-hub-c-raspberrypi-getting-started
 RUN git clone -b develop --recursive https://github.com/Azure-samples/iot-hub-c-raspberrypi-getting-started.git
 RUN echo build iot-hub-c-raspberrypi-getting-started
-CMD cd iot-hub-c-raspberrypi-getting-started/.misc && ./build.sh --toolchain-file ./toolchain-file-rpi.cmake -cl --sysroot=$RPI_ROOT&& make
+RUN cd iot-hub-c-raspberrypi-getting-started/ && cmake -DCMAKE_TOOLCHAIN_FILE=/home/toolchain-file-rpi.cmake -DcompileOption_C:STRING="--sysroot=$RPI_ROOT" -Dazure_IoT_Sdk_c=/azure-iot-sdk-c . && make
