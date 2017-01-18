@@ -12,6 +12,7 @@ RUN apt-get install -y \
     libssl-dev \
     make \
     pkg-config \
+    sshpass \
     uuid-dev \
     valgrind \
 	wget \
@@ -70,6 +71,8 @@ VOLUME /opt/edison
 # build azure iot sdks
 # generate toolchain-file
 COPY toolchain-edison.cmake /home
+COPY index.sh /index.sh
+COPY deploy.sh /deploy.sh
 COPY build_edison.sh /build.sh
 
 RUN cd / 

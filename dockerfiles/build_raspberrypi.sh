@@ -17,7 +17,7 @@ if [ -f "/source/build.log" ]; then
     rm "/source/build.log"
 fi
 
-cd /source && cmake -DCMAKE_TOOLCHAIN_FILE=/toolchain-file-rpi.cmake -DcompileOption_C:STRING="--sysroot=$RPI_ROOT"  -Dazure_IoT_Sdk_c=/azure-iot-sdk-c .
+cd /source && cmake -DCMAKE_TOOLCHAIN_FILE=/home/toolchain-file-rpi.cmake -DcompileOption_C:STRING="--sysroot=$RPI_ROOT"  -Dazure_IoT_Sdk_c=/azure-iot-sdk-c .
 make
 
 if [ $? -eq 0 ]; then

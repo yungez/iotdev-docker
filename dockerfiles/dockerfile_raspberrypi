@@ -12,6 +12,7 @@ RUN apt-get install -y \
     libssl-dev \
     make \
     pkg-config \
+    sshpass \
     uuid-dev \
     valgrind \
     sshpass
@@ -29,6 +30,8 @@ ENV RPI_ROOT ${PWD}/rpitools/raspbian-jessie-sysroot
 RUN PATH=$PATH:./rpitools/arm-linux-gnueabihf/bin
 
 # copy build script
+COPY index.sh /index.sh
+COPY deploy.sh /deploy.sh
 COPY build_raspberrypi.sh /build.sh
 
 # build azure iot sdks
@@ -39,6 +42,7 @@ SET(CMAKE_SYSTEM_VERSION 1)     # this one not so much \n\
 # this is the location of the amd64 toolchain targeting the Raspberry Pi \n\
 SET(CMAKE_C_COMPILER $ENV{RPI_ROOT}/../arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc) \n\
 # this is the file system root of the target \n\
+SET(CMAKE_SYSROOT $ENV{RPI_ROOT}) \n\
 SET(CMAKE_FIND_ROOT_PATH $ENV{RPI_ROOT}) \n\
 # search for programs ls in the build host directories \n\
 SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER) \n\
