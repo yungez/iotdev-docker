@@ -2,6 +2,7 @@
 
 save_device=0
 save_workingdir=0
+save_srcpath=0
 
 if [ "$1" == "build" ]
 then
@@ -31,13 +32,38 @@ do
     then
         workingdir="$arg"
         save_workingdir=0
+    elif [ $save_srcpath == 1 ]
+    then
+        srcpath="$arg"
+        save_srcpath=0
     else
         case "$arg" in
             "--device" ) save_device=1;;
             "--workingdir" ) save_workingdir=1;;
+            "--srcpath" ) save_srcpath=1;;
         esac
     fi
 done
 
+if [ $task == "deploy" ]
+then
+  if [[ -d $srcpath ]]; then
+    workingdir=$srcpath
+    srcpathparam="--srcdockerpath /source/*"
+  elif [[ -f $srcpath ]]; then
+    workingdir=$srcpath/..
+    srcpathparam="--srcdockerpath /source/$(basename $srcpath)"
+  else
+    echo "$srcpath is not valid"
+    exit 1
+  fi
+fi
+
+echo working dir is: $workingdir
+echo src path param is: $srcpathparam
+
+echo docker pull $imagename
 docker pull $imagename
-docker run -i -v $workingdir:/source $imagename /index.sh $task $@
+
+echo docker run -i -v $workingdir:/source $imagename /index.sh $task $srcpathparam $@
+docker run -i -v $workingdir:/source $imagename /index.sh $task $srcpathparam $@

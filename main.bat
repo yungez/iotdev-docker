@@ -18,6 +18,7 @@ SHIFT
 if "%1" equ "" goto arg-done
 if "%1" equ "--workingdir" goto arg-workingdir
 if "%1" equ "--device" goto arg-device
+if "%1" equ "--srcpath" goto arg-srcpath
 SHIFT
 GOTO :arg-loop
 
@@ -31,6 +32,11 @@ SHIFT
 SET device=%1
 GOTO :arg-continue
 
+:arg-srcpath
+SHIFT
+SET srcpath=%1
+GOTO :arg-continue
+
 :arg-continue
 SHIFT
 goto :arg-loop
@@ -39,11 +45,11 @@ goto :arg-loop
 
 echo working dir is: %workingdir%
 echo device is: %device%
+echo src path is: %srcpath%
 
 if %device% equ edison (
   SET imagename="zhijzhao/edison"
 ) else (
-  echo %device%
   if %device% equ raspberrypi (
     SET imagename="zhijzhao/raspberrypi"
   ) else (
@@ -53,5 +59,24 @@ if %device% equ edison (
 
 echo imagename is: %imagename%
 
+SET srcpathparam=
+if %task% equ deploy (
+  if exist %srcpath%\* (
+    SET workingdir=%srcpath%
+    SET srcpathparam=--srcdockerpath /source/*
+  ) else (
+    SET workingdir=%srcpath%\..
+    for %%F in ("%srcpath%") do (
+      SET srcpathparam=--srcdockerpath /source/%%~nxF
+    )
+  )
+)
+
+echo working dir is: %workingdir%
+echo src path param is: %srcpathparam%
+
+echo docker pull %imagename%
 docker pull %imagename%
-docker run -i -v %workingdir%:/source %imagename% /index.sh %task% %*
+
+echo docker run -i -v %workingdir%:/source %imagename% /index.sh %task% %srcpathparam% %*
+docker run -i -v %workingdir%:/source %imagename% /index.sh %task% %srcpathparam% %*
