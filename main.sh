@@ -20,10 +20,10 @@ do
         save_device=0
         if [ $arg == "edison" ]
         then
-          imagename="edison"
+          imagename="zhijzhao/edison"
         elif [ $arg == "raspberrypi" ]
         then
-          imagename="yungez/docker-raspberrypi"
+          imagename="zhijzhao/raspberrypi"
         else
           echo unknow device name
         fi
