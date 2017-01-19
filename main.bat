@@ -75,5 +75,8 @@ if %task% equ deploy (
 echo working dir is: %workingdir%
 echo src path param is: %srcpathparam%
 
+echo docker pull %imagename%
+docker pull %imagename%
+
 echo docker run -i -v %workingdir%:/source %imagename% /index.sh %task% %srcpathparam% %*
 docker run -i -v %workingdir%:/source %imagename% /index.sh %task% %srcpathparam% %*
