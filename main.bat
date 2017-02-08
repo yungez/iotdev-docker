@@ -1,5 +1,6 @@
 @echo off
 setlocal
+echo -------------------------------------------------------
 
 if "%1" equ "build" (
   SET task=build
@@ -7,11 +8,11 @@ if "%1" equ "build" (
   if "%1" equ "deploy" (
     SET task=deploy
   ) else (
-    echo unknown task
+    echo Unknown task
   )
 )
 
-echo task is: %task%
+echo Task: %task%
 SHIFT
 
 :arg-loop
@@ -43,21 +44,20 @@ goto :arg-loop
 
 :arg-done
 
-echo working dir is: %workingdir%
-echo device is: %device%
-echo src path is: %srcpath%
+echo Device: %device%
+if defined srcpath echo Source path: %srcpath%
 
 if %device% equ edison (
-  SET imagename="zhijzhao/edison"
+  SET imagename=zhijzhao/edison
 ) else (
   if %device% equ raspberrypi (
-    SET imagename="zhijzhao/raspberrypi"
+    SET imagename=zhijzhao/raspberrypi
   ) else (
     echo unknown device
   )
 )
 
-echo imagename is: %imagename%
+echo Image name: %imagename%
 
 SET srcpathparam=
 if %task% equ deploy (
@@ -72,11 +72,17 @@ if %task% equ deploy (
   )
 )
 
-echo working dir is: %workingdir%
-echo src path param is: %srcpathparam%
+echo Working directory: %workingdir%
+if defined srcpathparam echo Source path param: %srcpathparam%
 
-echo docker pull %imagename%
+echo -------------------------------------------------------
+echo Pulling docker image...
 docker pull %imagename%
 
-echo docker run -i -v %workingdir%:/source %imagename% /index.sh %task% %srcpathparam% %*
+echo -------------------------------------------------------
+if %task% equ deploy (
+  echo Deploying to device via docker container...
+) else (
+  echo Building code inside docker container...
+)
 docker run -i -v %workingdir%:/source %imagename% /index.sh %task% %srcpathparam% %*

@@ -47,4 +47,4 @@ ENV CXX ${PWD}/rpitools/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++
 RUN echo clone iot-hub-c-raspberrypi-getting-started
 RUN git clone -b develop --recursive https://github.com/Azure-samples/iot-hub-c-raspberrypi-getting-started.git
 RUN echo build iot-hub-c-raspberrypi-getting-started
-RUN cd iot-hub-c-raspberrypi-getting-started/ && cmake -DCMAKE_TOOLCHAIN_FILE=/home/toolchain-raspberrypi.cmake -DcompileOption_C:STRING="--sysroot=$RPI_ROOT" -Dazure_IoT_Sdk_c=/azure-iot-sdk-c . && make
+RUN cd iot-hub-c-raspberrypi-getting-started/ && cmake -DCMAKE_TOOLCHAIN_FILE=/home/toolchain-raspberrypi.cmake -Dazure_IoT_Sdk_c=/azure-iot-sdk-c . && make

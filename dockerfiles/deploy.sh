@@ -39,5 +39,10 @@ do
     fi
 done
 
-echo sshpass -p $password scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r $srcdockerpath $username@$deviceip:$destdir
-sshpass -p $password scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r $srcdockerpath $username@$deviceip:$destdir
+sshpass -p $password scp -vo UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r $srcdockerpath $username@$deviceip:$destdir
+
+if [ $? -eq 0 ]; then
+    echo Deploy succeeded!
+else
+    exit $?
+fi

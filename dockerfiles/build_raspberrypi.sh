@@ -17,11 +17,11 @@ if [ -f "/source/build.log" ]; then
     rm "/source/build.log"
 fi
 
-cd /source && cmake -DCMAKE_TOOLCHAIN_FILE=/home/toolchain-raspberrypi.cmake -DcompileOption_C:STRING="--sysroot=$RPI_ROOT"  -Dazure_IoT_Sdk_c=/azure-iot-sdk-c .
+cd /source && cmake -DCMAKE_TOOLCHAIN_FILE=/home/toolchain-raspberrypi.cmake -Dazure_IoT_Sdk_c=/azure-iot-sdk-c .
 make
 
 if [ $? -eq 0 ]; then
-    echo source code build succeeded!
+    echo Build succeeded!
 else
     exit $?
 fi
