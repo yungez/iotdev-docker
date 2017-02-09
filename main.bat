@@ -77,7 +77,7 @@ if defined srcpathparam echo Source path param: %srcpathparam%
 
 echo -------------------------------------------------------
 echo Pulling docker image...
-rem docker pull %imagename%
+docker pull %imagename%
 
 echo -------------------------------------------------------
 if %task% equ deploy (
