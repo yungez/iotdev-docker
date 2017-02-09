@@ -9,13 +9,13 @@ do
         save_builddir=0
     else
         case "$arg" in
-            "--deviceip" ) save_builddir=1;;
+            "--builddir" ) save_builddir=1;;
         esac
     fi
 done
 
 if [ -z ${builddir+x} ]; then 
-    builddir = /source
+    builddir=/source
 fi
 
 if [ ! -d "$builddir" ]; then
@@ -41,8 +41,10 @@ if [ -f "/source/build.log" ]; then
     rm "/source/build.log"
 fi
 
-cd /source && cmake -DCMAKE_TOOLCHAIN_FILE=/home/toolchain-edison.cmake -Dazure_IoT_Sdk_c=/azure-iot-sdk-c  .
+pushd $builddir > /dev/null
+cmake -DCMAKE_TOOLCHAIN_FILE=/home/toolchain-edison.cmake -Dazure_IoT_Sdk_c=/azure-iot-sdk-c  /source
 make
+popd > /dev/null
 
 if [ $? -eq 0 ]; then
     echo Build succeeded!
