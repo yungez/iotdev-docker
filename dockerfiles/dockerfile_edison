@@ -16,8 +16,13 @@ RUN apt-get install -y \
     uuid-dev \
     valgrind \
 	wget \
-	unzip
-RUN apt-get install -y python
+	unzip \
+    python
+
+COPY toolchain-edison.cmake /home
+COPY index.sh /index.sh
+COPY deploy.sh /deploy.sh
+COPY build_edison.sh /build.sh
 
 RUN wget http://downloadmirror.intel.com/25028/eng/edison-sdk-linux64-ww25.5-15.zip
 RUN unzip -o edison-sdk-linux64-ww25.5-15.zip
@@ -27,61 +32,11 @@ RUN . /edison-sdk/environment-setup-core2-32-poky-linux
 RUN rm edison-sdk-linux64-ww25.5-15.zip
 RUN rm poky-edison-glibc-x86_64-edison-image-core2-32-toolchain-1.7.2.sh
 
-
-ENV EDISON_SDK="/edison-sdk" 
-ENV PREFIX="/opt/edison" 
-ENV EDISON_ROOT="/edison-sdk/sysroots/core2-32-poky-linux"
-ENV SDKTARGETSYSROOT=/edison-sdk/sysroots/core2-32-poky-linux
-ENV PATH=/edison-sdk/sysroots/x86_64-pokysdk-linux/usr/bin:/edison-sdk/sysroots/x86_64-pokysdk-linux/usr/bin/i586-poky-linux:$PATH
-ENV PKG_CONFIG_SYSROOT_DIR=$SDKTARGETSYSROOT
-ENV PKG_CONFIG_PATH=$SDKTARGETSYSROOT/usr/lib/pkgconfig
-ENV CONFIG_SITE=/edison-sdk/site-config-core2-32-poky-linux
-ENV OECORE_NATIVE_SYSROOT="/edison-sdk/sysroots/x86_64-pokysdk-linux"
-ENV OECORE_TARGET_SYSROOT="$SDKTARGETSYSROOT"
-ENV OECORE_ACLOCAL_OPTS="-I /edison-sdk/sysroots/x86_64-pokysdk-linux/usr/share/aclocal"
-ENV PYTHONHOME=/edison-sdk/sysroots/x86_64-pokysdk-linux/usr
-ENV CC="i586-poky-linux-gcc  -m32 -march=core2 -mtune=core2 -msse3 -mfpmath=sse -mstackrealign -fno-omit-frame-pointer --sysroot=$SDKTARGETSYSROOT"
-ENV CXX="i586-poky-linux-g++  -m32 -march=core2 -mtune=core2 -msse3 -mfpmath=sse -mstackrealign -fno-omit-frame-pointer --sysroot=$SDKTARGETSYSROOT"
-ENV CPP="i586-poky-linux-gcc -E  -m32 -march=core2 -mtune=core2 -msse3 -mfpmath=sse -mstackrealign -fno-omit-frame-pointer --sysroot=$SDKTARGETSYSROOT"
-ENV AS="i586-poky-linux-as  "
-ENV LD="i586-poky-linux-ld   --sysroot=$SDKTARGETSYSROOT"
-ENV GDB=i586-poky-linux-gdb
-ENV STRIP=i586-poky-linux-strip
-ENV RANLIB=i586-poky-linux-ranlib
-ENV OBJCOPY=i586-poky-linux-objcopy
-ENV OBJDUMP=i586-poky-linux-objdump
-ENV AR=i586-poky-linux-ar
-ENV NM=i586-poky-linux-nm
-ENV M4=m4
-ENV TARGET_PREFIX=i586-poky-linux-
-ENV CONFIGURE_FLAGS="--target=i586-poky-linux --host=i586-poky-linux --build=x86_64-linux --with-libtool-sysroot=$SDKTARGETSYSROOT"
-ENV CFLAGS=" -O2 -pipe -g -feliminate-unused-debug-types"
-ENV CXXFLAGS=" -O2 -pipe -g -feliminate-unused-debug-types"
-ENV LDFLAGS="-Wl,-O1 -Wl,--hash-style=gnu -Wl,--as-needed"
-ENV CPPFLAGS=""
-ENV KCFLAGS="--sysroot=$SDKTARGETSYSROOT"
-ENV OECORE_DISTRO_VERSION="1.7.2"
-ENV OECORE_SDK_VERSION="1.7.2"
-ENV ARCH=x86
-ENV CROSS_COMPILE=i586-poky-linux-
-
-RUN env
-VOLUME /opt/edison 
+ENV EDISON_ROOT=/edison-sdk/sysroots/core2-32-poky-linux
+ENV CC=/edison-sdk/sysroots/x86_64-pokysdk-linux/usr/bin/i586-poky-linux/i586-poky-linux-gcc
+ENV CXX=/edison-sdk/sysroots/x86_64-pokysdk-linux/usr/bin/i586-poky-linux/i586-poky-linux-g++
 
 # build azure iot sdks
-# generate toolchain-file
-COPY toolchain-edison.cmake /home
-COPY index.sh /index.sh
-COPY deploy.sh /deploy.sh
-COPY build_edison.sh /build.sh
-
-RUN cd / 
 RUN git clone --recursive https://github.com/Azure/azure-iot-sdk-c.git
-RUN cd /azure-iot-sdk-c/uamqp && git submodule update --init -- c-utility
-RUN cd /azure-iot-sdk-c/umqtt && git submodule update --init -- c-utility
-RUN ./azure-iot-sdk-c/build_all/linux/build.sh --toolchain-file /home/toolchain-edison.cmake -cl --sysroot=$EDISON_ROOT
-
-RUN echo clone iot-hub-c-edison-getting-started
-RUN cd / && git clone -b develop --recursive https://github.com/Azure-samples/iot-hub-c-edison-getting-started.git
-RUN echo build iot-hub-c-edison-getting-started
-RUN cd iot-hub-c-edison-getting-started/ && cmake -DCMAKE_TOOLCHAIN_FILE=/home/toolchain-edison.cmake -Dazure_IoT_Sdk_c=/azure-iot-sdk-c && make
+RUN /azure-iot-sdk-c/build_all/linux/build.sh --toolchain-file /home/toolchain-edison.cmake -cl --sysroot=$EDISON_ROOT
+ENV AZURE_IOT_SDK /azure-iot-sdk-c

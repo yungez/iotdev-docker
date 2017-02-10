@@ -30,5 +30,5 @@ ENV CXX ${PWD}/rpitools/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++
 
 # build azure iot sdks
 RUN git clone --recursive https://github.com/Azure/azure-iot-sdk-c.git
-RUN ./azure-iot-sdk-c/build_all/linux/build.sh --toolchain-file /home/toolchain-raspberrypi.cmake -cl --sysroot=$RPI_ROOT
+RUN /azure-iot-sdk-c/build_all/linux/build.sh --toolchain-file /home/toolchain-raspberrypi.cmake -cl --sysroot=$RPI_ROOT
 ENV AZURE_IOT_SDK /azure-iot-sdk-c
