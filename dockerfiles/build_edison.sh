@@ -28,13 +28,9 @@ if [ ! -d "/source" ]; then
     exit 1
 fi
 
-if [ $# -gt 0 ]; then
-    set cmakefile=$1
-elif [ ! -f "/source/CMakeLists.txt" ]; then
+if [ ! -f "/source/CMakeLists.txt" ]; then
     echo no /source/CMakeLists.txt
     exit 1
-else
-    set cmakefile=.
 fi
 
 if [ -f "/source/build.log" ]; then
@@ -42,7 +38,7 @@ if [ -f "/source/build.log" ]; then
 fi
 
 pushd $builddir > /dev/null
-cmake -DCMAKE_TOOLCHAIN_FILE=/home/toolchain-edison.cmake -Dazure_IoT_Sdk_c=/azure-iot-sdk-c  /source
+cmake -DCMAKE_TOOLCHAIN_FILE=/home/toolchain-edison.cmake /source
 make
 popd > /dev/null
 
