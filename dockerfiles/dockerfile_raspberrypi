@@ -14,8 +14,7 @@ RUN apt-get install -y \
     pkg-config \
     sshpass \
     uuid-dev \
-    valgrind \
-    sshpass
+    valgrind
 
 # copy build script
 COPY toolchain-raspberrypi.cmake /home

@@ -26,7 +26,6 @@ COPY build_edison.sh /build.sh
 
 RUN wget http://downloadmirror.intel.com/25028/eng/edison-sdk-linux64-ww25.5-15.zip
 RUN unzip -o edison-sdk-linux64-ww25.5-15.zip
-#RUN echo -ne "\n Y" | ./poky-edison-glibc-x86_64-edison-image-core2-32-toolchain-1.7.2.sh
 RUN ./poky-edison-glibc-x86_64-edison-image-core2-32-toolchain-1.7.2.sh -d /edison-sdk -y
 RUN . /edison-sdk/environment-setup-core2-32-poky-linux
 RUN rm edison-sdk-linux64-ww25.5-15.zip
