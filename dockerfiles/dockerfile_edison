@@ -35,3 +35,9 @@ ENV AZURE_IOT_SDK /azure-iot-sdk-c
 COPY index.sh /index.sh
 COPY deploy.sh /deploy.sh
 COPY build.sh /build.sh
+
+# Other environment settings from /edison-sdk/environment-setup-core2-32-poky-linux
+ENV CFLAGS=" -O2 -pipe -g -feliminate-unused-debug-types"
+ENV CXXFLAGS=" -O2 -pipe -g -feliminate-unused-debug-types"
+ENV LDFLAGS="-Wl,-O1 -Wl,--hash-style=gnu -Wl,--as-needed"
+ENV CPPFLAGS=""
