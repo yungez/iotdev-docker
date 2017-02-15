@@ -38,7 +38,7 @@ if [ -f "/source/build.log" ]; then
 fi
 
 pushd $builddir > /dev/null
-cmake -DCMAKE_TOOLCHAIN_FILE=/home/toolchain.cmake /source
+cmake -DCMAKE_TOOLCHAIN_FILE=/toolchain.cmake /source
 make
 popd > /dev/null
 
