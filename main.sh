@@ -1,8 +1,5 @@
 #!/bin/bash
-
-save_device=0
-save_workingdir=0
-save_srcpath=0
+echo -------------------------------------------------------
 
 if [ "$1" == "build" ]
 then
@@ -14,20 +11,18 @@ else
   echo unknown task
 fi
 
+echo Task: $task
+
+save_device=0
+save_workingdir=0
+save_srcpath=0
+
 for arg in "$@"
 do   
     if [ $save_device == 1 ]
     then
         save_device=0
-        if [ $arg == "edison" ]
-        then
-          imagename="zhijzhao/edison"
-        elif [ $arg == "raspberrypi" ]
-        then
-          imagename="zhijzhao/raspberrypi"
-        else
-          echo unknow device name
-        fi
+        device="$arg"
     elif [ $save_workingdir == 1 ]
     then
         workingdir="$arg"
@@ -45,6 +40,24 @@ do
     fi
 done
 
+echo Device: $device
+if [ ! -z ${srcpath+x} ]
+then
+  echo Source path: $srcpath
+fi
+
+if [ $device == "edison" ]
+then
+  imagename="zhijzhao/edison"
+elif [ $device == "raspberrypi" ]
+then
+  imagename="zhijzhao/raspberrypi"
+else
+  echo unknow device name
+fi
+
+echo Image name: $imagename
+
 if [ $task == "deploy" ]
 then
   if [[ -d $srcpath ]]; then
@@ -59,11 +72,18 @@ then
   fi
 fi
 
-echo working dir is: $workingdir
-echo src path param is: $srcpathparam
+echo Working directory: $workingdir
 
-echo docker pull $imagename
+echo -------------------------------------------------------
+echo Pulling docker image...
 docker pull $imagename
 
-echo docker run -i -v $workingdir:/source $imagename /index.sh $task $srcpathparam $@
+echo -------------------------------------------------------
+if [ $task == "deploy" ]
+then
+  echo Deploying to device via docker container...
+else
+  echo Building code inside docker container...
+fi
+
 docker run -i -v $workingdir:/source $imagename /index.sh $task $srcpathparam $@

@@ -73,7 +73,6 @@ if %task% equ deploy (
 )
 
 echo Working directory: %workingdir%
-if defined srcpathparam echo Source path param: %srcpathparam%
 
 echo -------------------------------------------------------
 echo Pulling docker image...
