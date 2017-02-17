@@ -1,0 +1,69 @@
+FROM ubuntu
+LABEL description="this image is adafruit feather m0 ubuntu cross compilation environment, which installed necessary tool chain."
+
+# step 1. install necessary packages
+RUN apt-get clean && apt-get update
+RUN apt-get install -y \
+    build-essential \
+    make \
+    curl \
+    git \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    pkg-config \
+    uuid-dev \
+    valgrind \
+	wget
+
+# step 2. download cross compilation toolchain
+# step 2.1 cross compiler
+RUN mkdir Downloads && cd Downloads	
+RUN wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/6-2016q4/gcc-arm-none-eabi-6_2-2016q4-20161216-linux.tar.bz2
+RUN tar xvjf gcc-arm-none-eabi-6_2-2016q4-20161216-linux.tar.bz2 && rm gcc-arm-none-eabi-6_2-2016q4-20161216-linux.tar.bz2
+
+ENV GCC_ARM_NONE_EABI=/gcc-arm-none-eabi-6_2-2016q4/
+# compiler
+ENV CC=$GCC_ARM_NONE_EABI/bin/arm-none-eabi-gcc
+ENV CXX=$GCC_ARM_NONE_EABI/bin/arm-none-eabi-g++
+
+# compiler flags
+ENV CFLAGS '-fno-rtti -fno-exceptions -std=gnu++11 -fno-threadsafe-statics -g -Os -ffunction-sections -fdata-sections -Wall -mthumb -mcpu=cortex-m0plus -nostdlib --param max-inline-insns-single=500 -DF_CPU=48000000L -DUSBCON -DPLATFORMIO=30201 -DARDUINO_SAMD_FEATHER_M0 -DARDUINO_ARCH_SAMD -D__SAMD21G18A__ -DARDUINO=10608 -DUSB_VID=0x239A -DUSB_PID=0x800B "-DUSB_PRODUCT=\"Adafruit Feather M0\"" -DUSB_MANUFACTURER=\"Adafruit\" -I/framework-arduinosam/cores/adafruit_feather_m0 -I/framework-arduinosam/system/CMSIS/CMSIS/Include -I/framework-arduinosam/system/libsam -I/framework-arduinosam/system/libsam/include -I/framework-arduinosam/system/CMSIS/Device/ATMEL -I/framework-arduinosam/system/CMSIS/Device/ATMEL/d21g18a/include -I/framework-arduinosam/variants/adafruit_feather_m0'
+
+ENV CXXFLAGS '-fno-rtti -fno-exceptions -std=gnu++11 -fno-threadsafe-statics -g -Os -ffunction-sections -fdata-sections -Wall -mthumb -mcpu=cortex-m0plus -nostdlib --param max-inline-insns-single=500 -DF_CPU=48000000L -DUSBCON -DPLATFORMIO=30201 -DARDUINO_SAMD_FEATHER_M0 -DARDUINO_ARCH_SAMD -D__SAMD21G18A__ -DARDUINO=10608 -DUSB_VID=0x239A -DUSB_PID=0x800B "-DUSB_PRODUCT=\"Adafruit Feather M0\"" -DUSB_MANUFACTURER=\"Adafruit\" -I/framework-arduinosam/cores/adafruit_feather_m0 -I/framework-arduinosam/system/CMSIS/CMSIS/Include -I/framework-arduinosam/system/libsam -I/framework-arduinosam/system/libsam/include -I/framework-arduinosam/system/CMSIS/Device/ATMEL -I/framework-arduinosam/system/CMSIS/Device/ATMEL/d21g18a/include -I/framework-arduinosam/variants/adafruit_feather_m0'
+
+
+# include path
+ENV C_INCLUDE_PATH="/framework-arduinosam/cores/adafruit_feather_m0:/framework-arduinosam/system/CMSIS/CMSIS/Include:/framework-arduinosam/system/libsam:/framework-arduinosam/system/libsam/include:/framework-arduinosam/system/CMSIS/Device/ATMEL:/framework-arduinosam/system/CMSIS/Device/ATMEL/d21g18a/include:/framework-arduinosam/variants/adafruit_feather_m0:E:/vsiot1/platformio/src:/framework-arduinosam/libraries/__cores__/adafruit_feather_m0/HID:/framework-arduinosam/libraries/__cores__/adafruit_feather_m0/SAMD_AnalogCorrection/src:/framework-arduinosam/libraries/__cores__/adafruit_feather_m0/SPI:/framework-arduinosam/libraries/__cores__/adafruit_feather_m0/USBHost/src:/framework-arduinosam/libraries/__cores__/adafruit_feather_m0/Wire:/framework-arduinosam/libraries/Audio/src:/framework-arduinosam/libraries/Bridge/src:/framework-arduinosam/libraries/Esplora/src:/framework-arduinosam/libraries/Ethernet/src:/framework-arduinosam/libraries/Firmata/src:/framework-arduinosam/libraries/GSM/src:/framework-arduinosam/libraries/HID/src:/framework-arduinosam/libraries/LiquidCrystal/src:/framework-arduinosam/libraries/RobotIRremote/src:/framework-arduinosam/libraries/Robot_Control/src:/framework-arduinosam/libraries/Robot_Motor/src:/framework-arduinosam/libraries/SD/src:/framework-arduinosam/libraries/SPI/src:/framework-arduinosam/libraries/Scheduler/src:/framework-arduinosam/libraries/Servo/src:/framework-arduinosam/libraries/SpacebrewYun/src:/framework-arduinosam/libraries/Stepper/src:/framework-arduinosam/libraries/TFT/src:/framework-arduinosam/libraries/Temboo/src:/framework-arduinosam/libraries/USBHost/src:/framework-arduinosam/libraries/WiFi/src:/framework-arduinosam/libraries/Wire/src:/gcc-arm-none-eabi-6_2-2016q4/arm-none-eabi/include:/gcc-arm-none-eabi-6_2-2016q4/lib/gcc/arm-none-eabi/6.2.1/include:/gcc-arm-none-eabi-6_2-2016q4/lib/gcc/arm-none-eabi/6.2.1/include-fixed"
+
+ENV CPLUS_INCLUDE_PATH="/framework-arduinosam/cores/adafruit_feather_m0:/framework-arduinosam/system/CMSIS/CMSIS/Include:/framework-arduinosam/system/libsam:/framework-arduinosam/system/libsam/include:/framework-arduinosam/system/CMSIS/Device/ATMEL:/framework-arduinosam/system/CMSIS/Device/ATMEL/d21g18a/include:/framework-arduinosam/variants/adafruit_feather_m0:E:/vsiot1/platformio/src:/framework-arduinosam/libraries/__cores__/adafruit_feather_m0/HID:/framework-arduinosam/libraries/__cores__/adafruit_feather_m0/SAMD_AnalogCorrection/src:/framework-arduinosam/libraries/__cores__/adafruit_feather_m0/SPI:/framework-arduinosam/libraries/__cores__/adafruit_feather_m0/USBHost/src:/framework-arduinosam/libraries/__cores__/adafruit_feather_m0/Wire:/framework-arduinosam/libraries/Audio/src:/framework-arduinosam/libraries/Bridge/src:/framework-arduinosam/libraries/Esplora/src:/framework-arduinosam/libraries/Ethernet/src:/framework-arduinosam/libraries/Firmata/src:/framework-arduinosam/libraries/GSM/src:/framework-arduinosam/libraries/HID/src:/framework-arduinosam/libraries/LiquidCrystal/src:/framework-arduinosam/libraries/RobotIRremote/src:/framework-arduinosam/libraries/Robot_Control/src:/framework-arduinosam/libraries/Robot_Motor/src:/framework-arduinosam/libraries/SD/src:/framework-arduinosam/libraries/SPI/src:/framework-arduinosam/libraries/Scheduler/src:/framework-arduinosam/libraries/Servo/src:/framework-arduinosam/libraries/SpacebrewYun/src:/framework-arduinosam/libraries/Stepper/src:/framework-arduinosam/libraries/TFT/src:/framework-arduinosam/libraries/Temboo/src:/framework-arduinosam/libraries/USBHost/src:/framework-arduinosam/libraries/WiFi/src:/framework-arduinosam/libraries/Wire/src:/gcc-arm-none-eabi-6_2-2016q4/arm-none-eabi/include:/gcc-arm-none-eabi-6_2-2016q4/lib/gcc/arm-none-eabi/6.2.1/include:/gcc-arm-none-eabi-6_2-2016q4/lib/gcc/arm-none-eabi/6.2.1/include-fixed"
+ENV CC=$GCC_ARM_NONE_EABI/bin/arm-none-eabi-gcc
+
+# step 2.2, part 2 libraries
+RUN wget https://dl.bintray.com/platformio/dl-packages/framework-arduinosam-1.10608.3.tar.gz
+RUN mkdir framework-arduinosam && tar xf framework-arduinosam-1.10608.3.tar.gz  -C ./framework-arduinosam && rm framework-arduinosam-1.10608.3.tar.gz
+ENV ARDUINOSAM_ROOT=/framework-arduinosam
+
+# step 2.3 fix arduino library bug
+COPY ./m0scripts/itoa.h /framework-arduinosam/cores/adafruit_feather_m0/itoa.h
+COPY ./m0scripts/itoa.c /framework-arduinosam/cores/adafruit_feather_m0/itoa.c
+
+# step 2.4 copy necessary tool chain files
+COPY ./m0scripts/makefile /framework-arduinosam/cores/adafruit_feather_m0/makefile
+COPY build_m0.sh /
+
+# step 3 copy link scripts
+RUN mkdir ldscripts
+COPY ./m0scripts/sam3x8e.ld /ldscripts/sam3x8e.ld
+COPY ./m0scripts/samd21g18a_bootloader_org.ld /ldscripts/samd21g18a_bootloader_org.ld
+
+# step 4. build, pre-build necessary libs Files
+RUN mkdir libs
+RUN mkdir libs/FrameworkArduinoVariant
+RUN mkdir libs/FrameworkArduino
+RUN mkdir libs/FrameworkArduino/USB
+RUN mkdir libs/FrameworkArduino/avr
+
+# RUN make
+RUN cd /framework-arduinosam/cores/adafruit_feather_m0 && make
+
+# add azure iot sdk
