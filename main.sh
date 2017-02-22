@@ -86,4 +86,4 @@ else
   echo Building code inside docker container...
 fi
 
-docker run -i -v $workingdir:/source $imagename /index.sh $task $srcpathparam $@
+docker run --rm -i -v $workingdir:/source $imagename /index.sh $task $srcpathparam $@
