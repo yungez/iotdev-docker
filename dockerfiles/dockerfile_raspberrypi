@@ -16,6 +16,9 @@ RUN apt-get install -y \
     uuid-dev \
     valgrind
 
+RUN apt-get install -y nodejs \
+    npm
+
 RUN git clone https://github.com/yungez/rpitools.git
 ENV SYSROOT ${PWD}/rpitools/raspbian-jessie-sysroot
 ENV CC ${PWD}/rpitools/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc
@@ -32,3 +35,11 @@ ENV AZURE_IOT_SDK /azure-iot-sdk-c
 COPY index.sh /index.sh
 COPY deploy.sh /deploy.sh
 COPY build.sh /build.sh
+COPY bi.sh /bi.sh
+
+# bi preparation
+RUN mkdir bi
+COPY ./bi/ /bi
+RUN cd bi/ && npm install
+# workaround
+COPY ./bi/appInsightsWrapper.js /bi/node_modules/az-iot-bi/lib/appInsightsWrapper.js
